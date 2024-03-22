@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Peliculas</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel"> 
+    
+    const { useState, useEffect } = React;
+
+    const API = async () => {
+        try {
+            const data = await fetch("http://localhost:22523/posts");
+            if (!data.ok) {
+                throw new Error('Error al obtener posts');
+            }
+            const dataJson = await data.json();
+            console.log(dataJson);
+            return dataJson;
+        } catch (error) {
+            console.error('Error con el API:', error);
+            return [];
+        }
+    };
+    const App = () => {
+        const [posts, setPosts] = useState([]);
+        useEffect(() => {
+            const fetchData = async () => {
+                const data = await API();
+                setPosts(data);
+            };
+            fetchData();
+        }, []); 
+
+        const Header = () => {
+            return (
+                <div className="header">
+                <img src="img/logo6.png" alt="Logo" width ="50" height="50"/>
+                    <nav>
+                        <ul>
+                            <li><a href="#">Inicio</a></li>
+                            <li><a href="#">Sobre Nosotros</a></li>
+                            <li><a href="#">Contacto</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            );
+        }
+        
+        const Footer = () => {
+            return (
+                <div className="footer">
+                    <p>Sistemas y Tecnologías Web Peliculas 2024.</p>
+                    <nav>
+                        <ul>
+                            <li><a href="#">Subscribe</a></li>
+                            <li>22523</li>
+                        </ul>
+                    </nav>
+                </div>
+            );
+        }
+    
+        return (
+            <div className="container">
+                <Header/>
+                <div className="titulo">
+                    <h1>Peliculas 2024</h1>
+                </div>
+                <div className="posts-container">
+                    <h2>Posts</h2>
+                    {posts.map(post => (
+                        <div key={post.id} className="post">
+                            <img src="img/dune2pst.jpg" alt="Logo"/>
+                            <h3>{post.movie_title}</h3>
+                            <p>{post.release_date}</p>
+                            <p>{post.director}</p>
+                            <p>{post.genre}</p>
+
+
+
+                        </div>
+                    ))}
+                </div>
+
+                <Footer/>
+            </div>
+        );
+    }
+    
+    
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<App />)
+    </script>
+</body>
+</html>
